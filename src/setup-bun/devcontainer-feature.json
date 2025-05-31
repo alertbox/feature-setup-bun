@@ -1,0 +1,39 @@
+{
+    "id": "bun",
+    "name": "Setup Bun",
+    "version": "0.1.0",
+    "description": "Download, install, and setup Bun in your Development Container.",
+    "documentationURL": "https://github.com/alertbox/feature-setup-bun/tree/main/src/setup-bun",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest"
+            ],
+            "default": "latest",
+            "description": "Select or enter a version."
+        },
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "Optional list of Node.js-compatible packages to install system-wide."
+        },
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "oven.bun-vscode"
+            ],
+            "settings": {
+                "github.copilot.chat.codeGeneration.instructions": [
+                    {
+                        "text": "This dev container includes `bun` and `bunx` pre-installed and available on the `PATH` for Bun.js, JavaScript and Typescript development."
+                    }
+                ]
+            }
+        }
+    },
+    "dependsOn": {
+        "ghcr.io/devcontainers/features/common-utils": {}
+    }
+}
