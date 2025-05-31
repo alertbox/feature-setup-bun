@@ -19,17 +19,16 @@ jobs:
       - name: Publish Feature
         uses: devcontainers/action@v1
         with:
-          publish-features: "true"
           base-path-to-features: "./src"
+          publish-features: "true"
+          features-namespace: "alertbox/oven"
           generate-docs: "true"
-          features-namespace: "alertbox/oven-sh"
           disable-repo-tagging: "true"
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create PR for Docs
-        id: push_image_info
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
