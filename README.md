@@ -35,7 +35,7 @@ You don't need to use the feature [node](https://github.com/devcontainers/featur
 
 ## Options
 
-See [src/setup-bun](./src/setup-bun/README.md) folder to learn more about options.
+See [src/setup-bun](./src/bun/README.md) folder to learn more about options.
 
 
 ## Contributing
