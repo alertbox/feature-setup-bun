@@ -21,7 +21,7 @@ jobs:
         with:
           base-path-to-features: "./src"
           publish-features: "true"
-          features-namespace: "alertbox/oven"
+          features-namespace: "alertbox/oven-sh"
           generate-docs: "true"
           disable-repo-tagging: "true"
 
