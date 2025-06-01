@@ -1,9 +1,9 @@
-name: "Release"
+name: Release
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   deploy:
@@ -19,20 +19,17 @@ jobs:
       - name: Publish Feature
         uses: devcontainers/action@v1
         with:
-          base-path-to-features: "./src"
-          publish-features: "true"
-          features-namespace: "alertbox/oven-sh"
-          generate-docs: "true"
-          disable-repo-tagging: "true"
-
+          base-path-to-features: ./src
+          publish-features: true
+          features-namespace: alertbox/oven-sh
+          generate-docs: true
+          disable-repo-tagging: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create PR for Docs
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
         run: |
           set -e
 
@@ -41,17 +38,17 @@ jobs:
           git config --global user.name github-actions
           git config pull.rebase false
 
-          branch=automated-documentation-update-$GITHUB_RUN_ID
-          git checkout -b $branch
+          branch="automated-documentation-update-$GITHUB_RUN_ID"
+          git checkout -b "$branch"
 
           # Add / update and commit
           git add */**/README.md
           git commit -m 'docs: recreate feature README.md [skip ci]' || export NO_UPDATES=true
 
           # Push
-          if [ "$NO_UPDATES" != "true" ] ; then
-              message='docs: recreate feature README.md'
-              description='this changeset is auto-generated via github workflow.'
-              git push origin "$branch"
-              gh pr create --title "$message" --body "$description"
+          if [ "$NO_UPDATES" != "true" ]; then
+            message='docs: recreate feature README.md'
+            description='this changeset is auto-generated via github workflow.'
+            git push origin "$branch"
+            gh pr create --title "$message" --body "$description"
           fi

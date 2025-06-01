@@ -3,8 +3,10 @@
 # The 'install.sh' entrypoint script is always executed as the root user.
 #
 # This script installs Bun CLI.
-# Source: https://bun.sh/install
-#         https://github.com/oven-sh/bun/tree/main/dockerhub
+#
+# Sources:
+#   - https://bun.sh/install
+#   - https://github.com/oven-sh/bun/tree/main/dockerhub
 
 set -e
 
@@ -22,36 +24,56 @@ check_packages() {
 
 export DEBIAN_FRONTEND=noninteractive
 
-# https://github.com/oven-sh/bun/releases
-VERSION=${VERSION:-"latest"}
-# https://bun.sh/docs/cli/add
-PACKAGES=${PACKAGES:-}
+# See https://github.com/oven-sh/bun/releases
+VERSION="${VERSION:-latest}"
+
+# See https://bun.sh/docs/cli/add
+PACKAGES="${PACKAGES:-}"
 
 echo "Activating feature 'bun'"
 
-# Clean up.
+# Clean up
 rm -rf /var/lib/apt/lists/*
 
+# Install required dependencies
 check_packages ca-certificates curl dirmngr gpg gpg-agent unzip
 
 ARCH="$(dpkg --print-architecture)"
 case "${ARCH##*-}" in
-    amd64) BUILD="x64-baseline";;
-    arm64) BUILD="aarch64";;
-    *)     echo "error: unsupported architecture: $ARCH"; exit 1 ;;
+    amd64)
+        BUILD="x64-baseline"
+        ;;
+    arm64)
+        BUILD="aarch64"
+        ;;
+    *)
+        echo "error: unsupported architecture: ${ARCH}"
+        exit 1
+        ;;
 esac
 
 case "${VERSION}" in
-    latest | canary | bun-v*) TAG="$VERSION"; ;;
-    v*)                       TAG="bun-${VERSION}"; ;;
-    *)                        TAG="bun-v${VERSION}"; ;;
+    latest | canary | bun-v*)
+        TAG="${VERSION}"
+        ;;
+    v*)
+        TAG="bun-${VERSION}"
+        ;;
+    *)
+        TAG="bun-v${VERSION}"
+        ;;
 esac
 
 case "${TAG}" in
-    latest) RELEASE="latest/download"; ;;
-    *)      RELEASE="download/${TAG}"; ;;
+    latest)
+        RELEASE="latest/download"
+        ;;
+    *)
+        RELEASE="download/${TAG}"
+        ;;
 esac
 
+# Setup environment variables and paths
 INSTALL_ENV="BUN_INSTALL"
 BIN_ENV="\$${INSTALL_ENV}/bin"
 
@@ -60,22 +82,32 @@ BIN_DIR="${INSTALL_DIR}/bin"
 EXE="${BIN_DIR}/bun"
 ZIP="bun-linux-${BUILD}.zip"
 
-curl "https://github.com/oven-sh/bun/releases/${RELEASE}/${ZIP}" -fsSLO --compressed --retry 5 ||
-      (echo "error: failed to download: ${TAG}" && exit 1)
+curl "https://github.com/oven-sh/bun/releases/${RELEASE}/${ZIP}" -fsSLO --compressed --retry 5 || {
+    echo "error: failed to download: ${TAG}"
+    exit 1
+}
 
-unzip $ZIP ||
-    (echo "error: failed to unzip ${ZIP}." && exit 1)
+unzip "${ZIP}" || {
+    echo "error: failed to unzip ${ZIP}."
+    exit 1
+}
 
-if [[ ! -d $BIN_DIR ]]; then
-    mkdir -p $BIN_DIR ||
-        (echo "error: failed to create install directory ${BIN_DIR}." && exit 1)
+if [[ ! -d "${BIN_DIR}" ]]; then
+    mkdir -p "${BIN_DIR}" || {
+        echo "error: failed to create install directory ${BIN_DIR}."
+        exit 1
+    }
 fi
 
-mv "bun-linux-${BUILD}/bun" $EXE ||
-    (echo "error: failed to move extracted bun to destination." && exit 1)
+mv "bun-linux-${BUILD}/bun" "${EXE}" || {
+    echo "error: failed to move extracted bun to destination."
+    exit 1
+}
 
-chmod +x $EXE ||
-    (echo "error: failed to set permission on bun executable." && exit 1)
+chmod +x "${EXE}" || {
+    echo "error: failed to set permission on bun executable."
+    exit 1
+}
 
 commands=(
     "export ${INSTALL_ENV}=\"${INSTALL_DIR}\""
@@ -87,7 +119,7 @@ bash_configs=(
     "${_REMOTE_USER_HOME}/.bash_profile"
 )
 
-if [[ ${XDG_CONFIG_HOME:-} ]]; then
+if [[ -n "${XDG_CONFIG_HOME:-}" ]]; then
     bash_configs+=(
         "${XDG_CONFIG_HOME}/.bash_profile"
         "${XDG_CONFIG_HOME}/.bashrc"
@@ -97,23 +129,23 @@ if [[ ${XDG_CONFIG_HOME:-} ]]; then
 fi
 
 for bash_config in "${bash_configs[@]}"; do
-    if [[ -w $bash_config ]]; then
+    if [[ -w "${bash_config}" ]]; then
         {
             echo -e '\n# bun'
             for command in "${commands[@]}"; do
-                echo "$command"
+                echo "${command}"
             done
-        } >> "$bash_config"
+        } >> "${bash_config}"
         break
     fi
 done
 
 # If packages are requested, install globally.
 # Ensure `bun install -g` works.
-if [ ${#PACKAGES[@]} -gt 0 ]; then
-    su ${_REMOTE_USER} -c "$EXE add --global $PACKAGES"
+if [ "${#PACKAGES[@]}" -gt 0 ]; then
+    su "${_REMOTE_USER}" -c "${EXE} add --global ${PACKAGES}"
 fi
 
-rm -rf $ZIP
+rm -rf "${ZIP}"
 
 echo "Done!"

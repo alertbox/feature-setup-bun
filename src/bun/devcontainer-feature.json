@@ -17,7 +17,7 @@
             "type": "string",
             "default": "",
             "description": "Optional list of Node.js-compatible packages to install system-wide."
-        },
+        }
     },
     "customizations": {
         "vscode": {

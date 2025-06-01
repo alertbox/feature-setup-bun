@@ -1,4 +1,4 @@
-name: "Validate"
+name: Validate
 on:
   pull_request:
   workflow_dispatch:
@@ -12,13 +12,13 @@ jobs:
       - name: Validate Configurations
         uses: devcontainers/action@v1
         with:
-          validate-only: "true"
-          base-path-to-features: "./src"
+          validate-only: true
+          base-path-to-features: ./src
 
       - name: Lint Shell Scripts
         uses: azohra/shell-linter@v0.6.0
         with:
-          path: "src/**/*.sh"
-          severity: "error" # [style, info, warning, error]
+          path: src/**/*.sh
+          severity: error  # [style, info, warning, error]
         env:
-          SHELLCHECK_OPTS: -e SC2072 # Acceptable use of decimal comparison
+          SHELLCHECK_OPTS: -e SC2072  # Acceptable use of decimal comparison
