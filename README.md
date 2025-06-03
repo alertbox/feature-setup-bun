@@ -5,6 +5,10 @@
 
 Download, install, and setup specific version of [Bun](https://bun.sh/) in your Dev Container.
 
+> [!note]
+>
+> Originally, this was created to have an isolated development environment to install the pre-release versions on WSL. See [Known Issues](#known-issues) to learn more.
+
 
 ## Quick Start
 
@@ -35,7 +39,7 @@ You don't need to use the feature [node](https://github.com/devcontainers/featur
 
 ## Options
 
-See [src/setup-bun](./src/bun/README.md) folder to learn more about options.
+See [src/bun](./src/bun/README.md) folder to learn more about options.
 
 
 ## Contributing
@@ -43,6 +47,11 @@ See [src/setup-bun](./src/bun/README.md) folder to learn more about options.
 The official repo to contribute would be [@oven-sh/bun](https://github.com/oven-sh/bun?tab=readme-ov-file#readme).
 
 Have a suggestion or a bug fix? Just open a pull request or an issue. Include clear and simple instructions possible.
+
+## Known Issues
+
+- [Windows Support @oven-sh/bun #43](https://github.com/oven-sh/bun/issues/43)
+- [Proposal: Create a feature to install Bun @devcontainers/features #949](https://github.com/devcontainers/features/pull/949)
 
 ## License
 
