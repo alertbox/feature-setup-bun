@@ -1,7 +1,7 @@
 {
     "id": "bun",
     "name": "Setup Bun",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Download, install, and setup specific version of Bun in your Dev Container.",
     "documentationURL": "https://github.com/alertbox/feature-setup-bun/tree/main/src/bun",
     "options": {
