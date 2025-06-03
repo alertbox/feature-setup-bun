@@ -40,12 +40,8 @@ check_packages ca-certificates curl dirmngr gpg gpg-agent unzip
 
 ARCH="$(dpkg --print-architecture)"
 case "${ARCH##*-}" in
-    amd64)
-        BUILD="x64-baseline"
-        ;;
-    arm64)
-        BUILD="aarch64"
-        ;;
+    amd64) BUILD="x64-baseline" ;;
+    arm64) BUILD="aarch64" ;;
     *)
         echo "error: unsupported architecture: ${ARCH}"
         exit 1
@@ -53,24 +49,14 @@ case "${ARCH##*-}" in
 esac
 
 case "${VERSION}" in
-    latest | canary | bun-v*)
-        TAG="${VERSION}"
-        ;;
-    v*)
-        TAG="bun-${VERSION}"
-        ;;
-    *)
-        TAG="bun-v${VERSION}"
-        ;;
+    latest | canary | bun-v*) TAG="${VERSION}" ;;
+    v*)                       TAG="bun-${VERSION}" ;;
+    *)                        TAG="bun-v${VERSION}" ;;
 esac
 
 case "${TAG}" in
-    latest)
-        RELEASE="latest/download"
-        ;;
-    *)
-        RELEASE="download/${TAG}"
-        ;;
+    latest) RELEASE="latest/download" ;;
+    *)      RELEASE="download/${TAG}" ;;
 esac
 
 # Setup environment variables and paths
@@ -142,7 +128,10 @@ done
 
 # If packages are requested, install globally.
 # Ensure `bun install -g` works.
-if [ "${#PACKAGES[@]}" -gt 0 ]; then
+if [ -n "${PACKAGES}" ]; then
+    echo "Installing global packages..."
+    # Replace commas to spaces.
+    PACKAGES=${PACKAGES//,/ }
     su "${_REMOTE_USER}" -c "${EXE} add --global ${PACKAGES}"
 fi
 
